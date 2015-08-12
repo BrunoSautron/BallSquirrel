@@ -2,9 +2,8 @@ from Tkinter import *
 from math import *
 from scipy import *
 import ImageTk
-import threading
 
-from MyTimer import *
+from MyThreading import *
 
 class   ObjetDeLaVie:
     """Unobjet avec les propriete Newton"""
@@ -18,7 +17,7 @@ class   ObjetDeLaVie:
         self.px = px0
         self.coeff = coeff
         self.moov = 0
-        self.timer = MyTimer(0.001, self.deplace)
+        self.thread = MyThreading(self)
 
     def shoot(self, vitesse, angle):
         self.angle = angle
@@ -26,13 +25,13 @@ class   ObjetDeLaVie:
         self.vx = cos(self.angle * 0.0174) * vitesse
         self.vy = sin(self.angle * 0.0174) * vitesse
         self.tps = 0
-        self.timer.start()
+        self.thread.start()
 
     def deplace(self):
         self.moov = 1
         if (self.vitesse > 2):
             if (self.py > 340):
-                self.timer.stop()
+                self.thread.stop()
                 self.px0 = self.px
                 self.py0 = 340
                 self.vitesse *= self.coeff
@@ -56,5 +55,5 @@ class   ObjetDeLaVie:
                 self.tps += 0.018
         else:
             self.moov = 0
-            self.timer.stop()
+            self.thread.stop()
 

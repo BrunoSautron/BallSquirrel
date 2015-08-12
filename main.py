@@ -10,7 +10,6 @@ from Gland import *
 from Squirrel import *
 
 
-
 def     pointeur(event):
     x,y = event.x,event.y
 
@@ -63,8 +62,9 @@ sol = can.create_image(0, 351, image = sol_image, anchor = NW)
 #POID, COEFF rebon, Py, Px
 gl = [Gland(can, 100, 1100, gland_image),
         Gland(can, 200, 1050, gland_image),
-        0]
-sq = [Squirrel(can, 2, 0.3, 340, 50, squirrel_image),
-        0]
+        Gland(can, 120, 1050, gland_image)]
+sq = [Squirrel(can, 2, 0.3, 340, 50, squirrel_image)]
+
+gl[0].shoot(50, 50);
 #kill de la fenetre
 fen.mainloop()
