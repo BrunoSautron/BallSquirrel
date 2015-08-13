@@ -1,11 +1,9 @@
-from ObjetDeLaVie import *
-from Tkinter import *
-from ObjetDeLaVie import *
+from Thing import *
 
-class 	Squirrel(ObjetDeLaVie):
-    """LE squirrel"""
+class Squirrel(Thing):
+	def __init__(self, name, Y=0, X=0):
+		Thing.__init__(self, "Squirrel", Y, X, 3, 3, 1, 0.7, 'ab.gif')
+		self._name = name
 
-    def __init__(self, can, poids, coeff, py, px, img):
-        ObjetDeLaVie.__init__(self, can, poids, coeff, py, px)
-        self.image = self.can.create_image(self.px, self.py, image = img, anchor = NW)
-
+		print "Name: " + self._name
+		self._printEnd()

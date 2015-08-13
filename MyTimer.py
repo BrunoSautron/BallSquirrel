@@ -1,6 +1,3 @@
-from math import *
-from scipy import *
-import ImageTk
 import threading
 
 class   MyTimer:
