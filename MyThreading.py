@@ -1,21 +1,27 @@
 import threading
 import time
+from MyTimer import *
 
 class MyThreading(threading.Thread):
-	def __init__(self, object):
+	def __init__(self):
 		threading.Thread.__init__(self)
-		self.terminated = False
-		self._object = object
+		self.threaded = False
+		self.__tps = 0
+		self.__dTime = 0.001
+
+	def getTps(self):
+		return self.__tps
 
 	def run(self):
-		i = 0
-		while (not self.terminated):
-			self._object.forward(0, 10)
-			time.sleep(1.0)
-			i += 1
-			if (i >= 10):
-				self.stop()
-		print "Thread of a " + self._object.getType() + " stoped"
-	
+		while (1):
+			if (self.threaded):
+				self.deplace(self.__dTime)
+			time.sleep(self.__dTime)
+			self.__tps += self.__dTime
+
+	def go(self):
+		self.threaded = True
+
 	def stop(self):
-		self.terminated = True
+		self.threaded = False
+		self.__tps = 0

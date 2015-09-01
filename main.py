@@ -1,10 +1,12 @@
 import threading
 from Game import *
-from MyTimer import *
 
-g = Game()
+def main():
+	g = Game()
+	g.run()
+	g.win.mainloop()
+	g.stop()
+	
 
-g.player.thread.start()
-t = MyTimer(0.2, g.render)
-t.start()
-g.win.mainloop()
+if __name__ == "__main__":
+	main()
