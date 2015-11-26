@@ -3,6 +3,7 @@
 from MyThreading import *
 import ImageTk
 import math
+import random
 
 class Thing(MyThreading):
 	def __init__(self, type="None", weight=1, rebound=0.5, Y=0, X=0, img=''):
@@ -18,14 +19,19 @@ class Thing(MyThreading):
 		self._directionY = 1
 		self._directionX = 1
 		self._angle = 45
+		self.maxJump = 4
+		self.currentJump = 0
 		self._vY = math.sin(math.radians(self._angle)) * self._v0
 		self._vX = math.cos(math.radians(self._angle)) * self._v0
 		self._weight = weight
 		self._rebound = rebound
-		self.img = ImageTk.PhotoImage(file = "images/" + img)
-		self._sizeY = self.img.height()
-		self._sizeX = self.img.width()
+		self.__img = ImageTk.PhotoImage(file = "images/" + img)
+		self.__imgCan = 0
+		self._sizeY = self.__img.height()
+		self._sizeX = self.__img.width()
 		self.__tps = 0
+		self._isMoving = False
+		self.beginThreading()
 		print "╔= " + self._type + " =="
 		print "Weight: " + str(self._weight)
 		print "Rebound: " + str(self._rebound)
@@ -59,20 +65,25 @@ class Thing(MyThreading):
 		return (self._weight)
 	def getRebound(self):
 		return (self._rebound)
+	def getImg(self):
+		return (self.__img)
+	def getImgCan(self):
+		return (self.__imgCan)
 
 	def setX(self, X):
 		self._X = X
 	def setY(self, Y):
 		self._Y = Y
+	def setImgCan(self, imgCan):
+		self.__imgCan = imgCan
 
 	def __isEnoughtFast(self):
 		if (self._v0 < 0.6):
+			print "Because not enought fast",
 			return False
 		return True
 
 	def isMovable(self):
-		if (not self.__isEnoughtFast()):
-			return False
 
 		if (self._X < 0):
 			self._directionX *= -1
@@ -87,14 +98,23 @@ class Thing(MyThreading):
 			self._X0 = self._X * 2 - self._X0
 
 		if (self._Y + self._sizeY > 400):
+
 			self.__tps = 0
 			self._v0 *= self._rebound
+			if (not self.__isEnoughtFast()):
+				self._Y = 400 - self._sizeY
+				return False
+			if (self._angle > 180):
+				self._angle = self._angle - 2 *(self._angle - 180)
+			elif (self._angle < 0):
+				self._angle *= -1
+			elif (self._angle == -90 or self._angle == 270):
+				self._angle == 90
+
 			self._vY = math.sin(math.radians(self._angle)) * self._v0 * self._directionY
 			self._vX = math.cos(math.radians(self._angle)) * self._v0 * self._directionX
 			self._Y0 = 400 - self._sizeY
 			self._X0 = self._X
-			if (not self.__isEnoughtFast()):
-				return False
 
 		return True
 
@@ -105,15 +125,38 @@ class Thing(MyThreading):
 		
 		if (not self.isMovable()):
 			self._Y = 400 - self._sizeY
-			print self.name + ": stoped at " + str(self.getTps()) + "s"
+			print self.name + ": reset after at " + str(self.getTps()) + "s"
 			self.__tps = 0
-			self.stop()
+			self.currentJump = 0
+			self._isMoving = False
+			self.cancelThreading()
 
-	def shoot(self, speed, angle):
+	def shoot(self, speed=100, angle=45):
+		print "Begin Shoot"
+		speed += random.randint(0, 300);
+		self.currentJump += 1
+		self._X0 = self._X
+		self._Y0 = self._Y
+		self.__tps = 0
 		self._v0 = speed
 		self._angle = angle
 		self._directionX = 1
 		self._directionY = 1
 		self._vY = math.sin(math.radians(self._angle)) * self._v0
 		self._vX = math.cos(math.radians(self._angle)) * self._v0
-		self.go()
+		self._v = 0
+		self._isMoving = True
+		self.resetThreading()
+
+	def isIn(self, thing):
+		for y in range(int(self._Y), int(self._Y + self._sizeY - 1)):
+			for x in range(int(self._X), int(self._X + self._sizeX - 1)):
+				if (y >= thing.getY() and y <= thing.getY() + thing.getSizeY() and x >= thing.getX() and x <= thing.getX() + thing.getSizeX()):
+					return True
+		return False
+
+	def isInList(self, things):
+		for i in range(len(things)):
+			if (self.isIn(things[i])):
+				return True
+		return False

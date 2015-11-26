@@ -13,15 +13,25 @@ class MyThreading(threading.Thread):
 		return self.__tps
 
 	def run(self):
+		i = 0
 		while (1):
-			if (self.threaded):
+			if (self._isMoving):
 				self.deplace(self.__dTime)
+				#print self._isMoving
 			time.sleep(self.__dTime)
 			self.__tps += self.__dTime
+			i += 1
 
-	def go(self):
+	def beginThreading(self):
 		self.threaded = True
 
-	def stop(self):
+	def resetThreading(self):
+		self.beginThreading()
+		self.__tps = 0
+
+	def cancelThreading(self):
+		self.__tps = 0;
+
+	def stopThreading(self):
 		self.threaded = False
 		self.__tps = 0

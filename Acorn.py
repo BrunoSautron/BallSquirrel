@@ -3,7 +3,7 @@ import random
 
 class Acorn(Thing):
 	def __init__(self, Y, X):
-		Thing.__init__(self, "Acorn", 20, 0.3, Y, X, 'gland.gif')
+		Thing.__init__(self, type="Acorn", weight=20, rebound=0.3, Y=Y, X=X, img='gland.gif')
 		self._point = 10
 
 		print "Point: " + str(self._point)
